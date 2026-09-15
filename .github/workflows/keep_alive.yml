@@ -1,16 +1,19 @@
-name: Keep Render Service Alive
+name: Keep-Alive Render API
 
 on:
   schedule:
-    # Se ejecuta cada 10 minutos
-    - cron: '*/10 * * * *'
-  # Permite ejecutar el workflow manualmente desde GitHub si deseas probarlo
-  workflow_dispatch:
+    - cron: '*/12 15-23 * * *'
+    - cron: '*/12 0-3 * * *'
+  workflow_dispatch: # Permite probarlo manualmente con un botón
 
 jobs:
-  ping:
+  ping-backend:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Render Health Check
+      - name: Hacer Ping a Render
+        env:
+          RENDER_API_URL: ${{ secrets.RENDER_API_URL }}
         run: |
-          curl -s -f -A "GitHub-Actions-KeepAlive" https://api-agenda-latest.onrender.com/healthz || echo "Error al contactar el servicio"
+          echo "Enviando ping a Render..."
+          curl -s -f "$RENDER_API_URL" || exit 1
+          echo "Ping completado con éxito."
